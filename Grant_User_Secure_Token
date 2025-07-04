@@ -3,14 +3,51 @@
 # Get the currently logged-in user
 loggedInUser=$(stat -f%Su /dev/console)
 
+# Function to prompt for input with cancel detection
+prompt_input() {
+    local promptText="$1"
+    local isHidden="$2"
+    local result
+
+    if [ "$isHidden" = true ]; then
+        result=$(osascript -e "try
+            display dialog \"$promptText\" default answer \"\" with hidden answer buttons {\"OK\", \"Cancel\"} default button 1
+            on error number -128
+                return \"__CANCEL__\"
+            end try
+            text returned of result")
+    else
+        result=$(osascript -e "try
+            display dialog \"$promptText\" default answer \"\" buttons {\"OK\", \"Cancel\"} default button 1
+            on error number -128
+                return \"__CANCEL__\"
+            end try
+            text returned of result")
+    fi
+
+    echo "$result"
+}
+
 # Prompt for admin username
-adminUser=$(osascript -e 'Tell application "System Events" to display dialog "Enter admin username:" default answer "" with hidden answer buttons {"OK"} default button 1' -e 'text returned of result')
+adminUser=$(prompt_input "Enter admin username:" false)
+if [[ "$adminUser" == "__CANCEL__" || -z "$adminUser" ]]; then
+    osascript -e 'display dialog "Operation cancelled or no input provided." buttons {"OK"} default button 1'
+    exit 1
+fi
 
 # Prompt for admin password
-adminPass=$(osascript -e 'Tell application "System Events" to display dialog "Enter admin password:" default answer "" with hidden answer buttons {"OK"} default button 1 with hidden answer' -e 'text returned of result')
+adminPass=$(prompt_input "Enter admin password:" true)
+if [[ "$adminPass" == "__CANCEL__" || -z "$adminPass" ]]; then
+    osascript -e 'display dialog "Operation cancelled or no input provided." buttons {"OK"} default button 1'
+    exit 1
+fi
 
 # Prompt for user password
-userPass=$(osascript -e 'Tell application "System Events" to display dialog "Enter your Mac password:" default answer "" with hidden answer buttons {"OK"} default button 1 with hidden answer' -e 'text returned of result')
+userPass=$(prompt_input "Enter your Mac password:" true)
+if [[ "$userPass" == "__CANCEL__" || -z "$userPass" ]]; then
+    osascript -e 'display dialog "Operation cancelled or no input provided." buttons {"OK"} default button 1'
+    exit 1
+fi
 
 # Grant Secure Token
 grantOutput=$(sysadminctl -adminUser "$adminUser" -adminPassword "$adminPass" -secureTokenOn "$loggedInUser" -password "$userPass" 2>&1)
