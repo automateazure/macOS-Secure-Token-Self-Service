@@ -1,22 +1,23 @@
 #!/bin/bash
 
-# Variables
-adminUser="yourAdminAccount"  # Replace with your MDM-created admin account name
-adminPass="yourAdminPassword"  # Replace with a secure retrieval method (e.g., Jamf LAPS)
-logFile="/var/log/secureTokenGrant.log"
+# Get the currently logged-in user
 loggedInUser=$(stat -f%Su /dev/console)
 
-# Prompt the user for their password
-userPass=$(osascript -e 'Tell application "System Events" to display dialog "To enable software updates, please enter your Mac password:" default answer "" with hidden answer buttons {"OK"} default button 1 with hidden answer' -e 'text returned of result')
+# Prompt for admin username
+adminUser=$(osascript -e 'Tell application "System Events" to display dialog "Enter admin username:" default answer "" with hidden answer buttons {"OK"} default button 1' -e 'text returned of result')
+
+# Prompt for admin password
+adminPass=$(osascript -e 'Tell application "System Events" to display dialog "Enter admin password:" default answer "" with hidden answer buttons {"OK"} default button 1 with hidden answer' -e 'text returned of result')
+
+# Prompt for user password
+userPass=$(osascript -e 'Tell application "System Events" to display dialog "Enter your Mac password:" default answer "" with hidden answer buttons {"OK"} default button 1 with hidden answer' -e 'text returned of result')
 
 # Grant Secure Token
 grantOutput=$(sysadminctl -adminUser "$adminUser" -adminPassword "$adminPass" -secureTokenOn "$loggedInUser" -password "$userPass" 2>&1)
 
-# Check result and log
+# Check result and notify
 if echo "$grantOutput" | grep -q "Done"; then
-    echo "$(date): Secure Token granted to $loggedInUser" | tee -a "$logFile"
-    osascript -e 'display dialog "Secure Token successfully granted. You can now install macOS updates." buttons {"OK"} default button 1'
+    osascript -e 'display dialog "Secure Token successfully granted!" buttons {"OK"} default button 1'
 else
-    echo "$(date): Failed to grant Secure Token to $loggedInUser. Output: $grantOutput" | tee -a "$logFile"
-    osascript -e 'display dialog "Failed to grant Secure Token. Please contact IT support." buttons {"OK"} default button 1'
+    osascript -e 'display dialog "Failed to grant Secure Token. Please contact IT." buttons {"OK"} default button 1'
 fi
