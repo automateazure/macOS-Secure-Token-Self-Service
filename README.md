@@ -1,6 +1,6 @@
 # Granting Secure Token via Jamf Self Service
 
-This guide is to assist users in granting themselves a **Secure Token** using a Jamf Self Service policy.
+This guide is to assist admins with granting an end user a **Secure Token** using a Jamf Self Service policy.
 
 ---
 
