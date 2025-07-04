@@ -1,12 +1,12 @@
 # Granting Secure Token via Jamf Self Service
 
-This guide is for **Service Desk Technicians** to assist users in granting themselves a **Secure Token** using a Jamf Self Service policy. This is required to enable macOS updates and reinstalls using tools like `erase-install`.
+This guide is to assist users in granting themselves a **Secure Token** using a Jamf Self Service policy. This is required to enable macOS updates and reinstalls using tools like `erase-install`.
 
 ---
 
 ## 🎯 Goal
 
-Enable a user to receive a Secure Token on a migrated Mac using a Jamf Self Service policy, so they can perform macOS upgrades or reinstalls.
+Enable a user to receive a Secure Token using a Jamf Self Service policy.
 
 ---
 
@@ -16,7 +16,7 @@ Enable a user to receive a Secure Token on a migrated Mac using a Jamf Self Serv
 - A **Bootstrap Token is escrowed** to Jamf.
 - A **Secure Token-enabled admin account** exists (e.g., created via MDM).
 - The user is **logged in locally** to their Mac.
-- You have access to the **admin password** (via Jamf LAPS or secure method).
+- You have access to the **admin password**
 
 ---
 
@@ -50,4 +50,3 @@ Enable a user to receive a Secure Token on a migrated Mac using a Jamf Self Serv
 - Passwords are collected securely using AppleScript dialogs.
 - No passwords are stored or written to disk.
 - Only success/failure messages are logged.
-- Use Jamf LAPS or parameter encryption to securely retrieve admin credentials.
