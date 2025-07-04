@@ -1,6 +1,6 @@
 # Granting Secure Token via Jamf Self Service
 
-This guide is to assist users in granting themselves a **Secure Token** using a Jamf Self Service policy. This is required to enable macOS updates and reinstalls using tools like `erase-install`.
+This guide is to assist users in granting themselves a **Secure Token** using a Jamf Self Service policy.
 
 ---
 
